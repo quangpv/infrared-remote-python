@@ -62,7 +62,7 @@ def training():
     while True:
         if input("Press enter to start. Type q to quit. ") == 'q':
             break
-        key_hex = remote.wait_key_press()
+        key_hex = remote.waiting_for_key_pressed()
         button_name = input("Enter a name for this button: ")
         key_config.write_key(key_hex, button_name)
 
