@@ -11,7 +11,7 @@ class IRRemote:
 
     def start_listen_key_press(self, on_key_event): pass
 
-    def wait_key_press(self) -> str: pass
+    def waiting_for_key_pressed(self) -> str: pass
 
     def release(self): pass
 
@@ -92,15 +92,12 @@ class RaspIRRemote(IRRemote):
 
         return segments
 
-    def __read_key_data_pressed__(self):
+    def waiting_for_key_pressed(self) -> str:
+        GPIO.wait_for_edge(self.port_number, GPIO.FALLING)
         signal_segments = self.__read_signal_segments__()
         key_binary = self.__convert_segments_to_binary__(signal_segments)
         key_hex = RaspIRRemote.convert_hex(key_binary)
         return key_hex
-
-    def wait_key_press(self) -> str:
-        GPIO.wait_for_edge(self.port_number, GPIO.FALLING)
-        return self.__read_key_data_pressed__()
 
     def start_listen_key_press(self, on_key_event):
         def on_receive(channel):
@@ -128,7 +125,7 @@ class SimulateIRRemote(IRRemote):
     def start_listen_key_press(self, on_key_event):
         raise RuntimeError("Not support")
 
-    def wait_key_press(self) -> str:
+    def waiting_for_key_pressed(self) -> str:
         raise RuntimeError("Not support")
 
     def release(self):
